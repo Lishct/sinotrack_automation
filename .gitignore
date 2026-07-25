@@ -1,0 +1,27 @@
+# .gitignore - Files to exclude from GitHub
+
+# Secrets and credentials
+.env
+sinotrack_data/
+
+
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+
+# VS Code settings
+.vscode/
+*.code-workspace
+
+# Excel and data files (optional)
+data/raw/
+*.xlsx
+*.csv
+~
+# OS junk files
+.DS_Store
+Thumbs.db
