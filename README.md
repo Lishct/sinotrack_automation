@@ -24,7 +24,6 @@ generate_dashboard.py   -- renders sinotrack_data/dashboard.html from
 | `sinotrack_scraper.py` | Pulls yesterday's data from the SinoTrack portal |
 | `parse_report.py` | Parses raw captures into the daily report + history |
 | `generate_dashboard.py` | Builds `sinotrack_data/dashboard.html` |
-| `run_daily.ps1` | Runs the full pipeline + delivers the dashboard; what Task Scheduler calls |
 | `requirements.txt` | Python dependencies |
 | `.env` | **Not committed** — your SinoTrack login (see setup below) |
 | `sinotrack_data/` | **Not committed** — raw captures, `report_history.json`, `dashboard.html` |
