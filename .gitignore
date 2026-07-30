@@ -4,8 +4,6 @@
 .env
 sinotrack_data/
 
-
-
 # Python cache files
 __pycache__/
 *.pyc
@@ -25,3 +23,6 @@ data/raw/
 # OS junk files
 .DS_Store
 Thumbs.db
+
+# Playwright
+.cache/
