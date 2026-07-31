@@ -18,6 +18,8 @@ spaced, so treat these numbers as approximate, not authoritative.
 """
 
 import json
+import time
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,6 +31,63 @@ VEHICLE_NAMES = {
 }
 
 GAP_CAP_SECONDS = 600  # 10 minutes; caps any single gap in the idle/driving split
+
+# Simple in-process cache so repeated calls for the same coords don't
+# hammer Nominatim (Nominatim's policy: max 1 req/sec, no bulk).
+_landmark_cache = {}
+
+
+def get_landmark(lat, lon):
+    """Returns the nearest landmark / place name for a lat/lon pair.
+
+    Tries named places first (amenity, tourism, road), then falls back to
+    suburb / area. Returns an empty string if nothing useful is found or
+    if the network call fails.  Results are cached in-process so each
+    unique location is only looked up once per run."""
+    if lat is None or lon is None:
+        return ""
+    key = (round(lat, 5), round(lon, 5))
+    if key in _landmark_cache:
+        return _landmark_cache[key]
+
+    try:
+        url = (
+            f"https://nominatim.openstreetmap.org/reverse"
+            f"?lat={lat}&lon={lon}&format=json&addressdetails=1&namedetails=1"
+        )
+        req = urllib.request.Request(url, headers={"User-Agent": "sinotrack-report/1.0"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read())
+        a = data.get("address", {})
+        nd = data.get("namedetails", {})
+        landmark = (
+            nd.get("name")
+            or a.get("amenity")
+            or a.get("tourism")
+            or a.get("leisure")
+            or a.get("shop")
+            or a.get("road")
+            or a.get("pedestrian")
+            or a.get("footway")
+            or ""
+        )
+        area = (
+            a.get("suburb")
+            or a.get("neighbourhood")
+            or a.get("village")
+            or a.get("town")
+            or a.get("city_district")
+            or a.get("city")
+            or ""
+        )
+        parts = [p for p in [landmark, area] if p]
+        result = ", ".join(parts)
+        _landmark_cache[key] = result
+        time.sleep(1)  # Nominatim rate limit: 1 req/sec
+        return result
+    except Exception:
+        _landmark_cache[key] = ""
+        return ""
 
 
 def load_records(json_path):
@@ -284,11 +343,12 @@ def update_history(report_rows, report_date, history_path=HISTORY_PATH):
 
 def print_report(report_rows):
     for row in report_rows:
-        loc = (
-            f"{row['last_lat']:.5f}, {row['last_lon']:.5f}"
-            if row["last_lat"] is not None
-            else "N/A"
-        )
+        if row["last_lat"] is not None:
+            coords = f"{row['last_lat']:.5f}, {row['last_lon']:.5f}"
+            landmark = get_landmark(row["last_lat"], row["last_lon"])
+            loc = f"{coords}  {landmark}".rstrip() if landmark else coords
+        else:
+            loc = "N/A"
         print(f"--- {row['vehicle']}  (device {row['device_id']}) ---")
         print(f"  Last reported:     {row['last_reported']}")
         print(f"  Distance today:    {row['distance_km']} km")
@@ -303,7 +363,10 @@ def print_report(report_rows):
         if row["stop_locations"]:
             print(f"  Stop locations:")
             for s in row["stop_locations"]:
-                print(f"    {s['time_utc']} UTC  ({s['lat']:.5f}, {s['lon']:.5f})  stayed {s['duration_hms']}")
+                coords = f"{s['lat']:.5f}, {s['lon']:.5f}"
+                landmark = get_landmark(s["lat"], s["lon"])
+                place = f"  {landmark}" if landmark else ""
+                print(f"    {s['time_utc']} UTC  ({coords}){place}  stayed {s['duration_hms']}")
         print()
 
 

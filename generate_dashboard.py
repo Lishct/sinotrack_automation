@@ -12,6 +12,8 @@ Run:
 """
 
 import json
+import time
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -19,6 +21,80 @@ HISTORY_PATH = Path("./sinotrack_data/report_history.json")
 OUTPUT_PATH = Path("./sinotrack_data/dashboard.html")
 
 TREND_DAYS = 14  # how many most-recent days feed each vehicle's sparkline
+
+_landmark_cache = {}
+
+
+def get_landmark(lat, lon):
+    """Reverse-geocodes a lat/lon via Nominatim. Returns a readable place
+    string (e.g. 'S & J Hotel, Erima') or '' if nothing useful is found.
+    Results are cached so each unique location is only fetched once."""
+    if lat is None or lon is None:
+        return ""
+    key = (round(lat, 5), round(lon, 5))
+    if key in _landmark_cache:
+        return _landmark_cache[key]
+    try:
+        url = (
+            f"https://nominatim.openstreetmap.org/reverse"
+            f"?lat={lat}&lon={lon}&format=json&addressdetails=1&namedetails=1"
+        )
+        req = urllib.request.Request(url, headers={"User-Agent": "sinotrack-dashboard/1.0"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read())
+        a = data.get("address", {})
+        nd = data.get("namedetails", {})
+        landmark = (
+            nd.get("name")
+            or a.get("amenity")
+            or a.get("tourism")
+            or a.get("leisure")
+            or a.get("shop")
+            or a.get("road")
+            or a.get("pedestrian")
+            or a.get("footway")
+            or ""
+        )
+        area = (
+            a.get("suburb")
+            or a.get("neighbourhood")
+            or a.get("village")
+            or a.get("town")
+            or a.get("city_district")
+            or a.get("city")
+            or ""
+        )
+        parts = [p for p in [landmark, area] if p]
+        result = ", ".join(parts)
+        _landmark_cache[key] = result
+        time.sleep(1)  # Nominatim rate limit: 1 req/sec
+        return result
+    except Exception:
+        _landmark_cache[key] = ""
+        return ""
+
+
+def build_landmark_map(history):
+    """Pre-fetches landmarks for every unique coordinate in the history
+    (last_lat/last_lon + all stop_locations). Returns a dict keyed by
+    'lat,lon' (5dp) so the JS can look them up without a network call."""
+    coords = set()
+    for h in history:
+        if h.get("last_lat") is not None:
+            coords.add((h["last_lat"], h["last_lon"]))
+        for s in h.get("stop_locations", []):
+            if s.get("lat") is not None:
+                coords.add((s["lat"], s["lon"]))
+
+    total = len(coords)
+    result = {}
+    for i, (lat, lon) in enumerate(coords, 1):
+        print(f"  [{i}/{total}] geocoding {lat:.5f}, {lon:.5f} ...", end=" ", flush=True)
+        place = get_landmark(lat, lon)
+        print(place or "(no result)")
+        key = f"{round(lat, 5)},{round(lon, 5)}"
+        result[key] = place
+    return result
 
 
 def load_history():
@@ -35,6 +111,10 @@ def build_html(history):
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     history_json = json.dumps(history)
+
+    print("Fetching landmarks for all coordinates in history...")
+    landmark_map = build_landmark_map(history)
+    landmark_json = json.dumps(landmark_map)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -310,6 +390,13 @@ def build_html(history):
 <script>
 const HISTORY = {history_json};
 const TREND_DAYS = {TREND_DAYS};
+const LANDMARKS = {landmark_json};
+
+function lmk(lat, lon) {{
+  if (lat == null || lon == null) return '';
+  const key = `${{Math.round(lat * 100000) / 100000}},${{Math.round(lon * 100000) / 100000}}`;
+  return LANDMARKS[key] || '';
+}}
 
 function hmsToSeconds(hms) {{
   const [h, m, s] = hms.split(':').map(Number);
@@ -369,12 +456,12 @@ function renderCards() {{
       </div>
       ${{path ? `<div class="sparkline"><div class="cap">Distance, last ${{trend.length}} days</div><svg viewBox="0 0 240 34" preserveAspectRatio="none"><path d="${{path}}" fill="none" stroke="var(--route-blue)" stroke-width="1.5"/></svg></div>` : ''}}
       <div class="ping-window mono">${{latest.first_ping_utc}} &rarr; ${{latest.last_ping_utc}} UTC</div>
-      ${{latest.last_lat != null ? `<div class="ping-window mono">Last seen: ${{latest.last_lat.toFixed(5)}}, ${{latest.last_lon.toFixed(5)}}</div>` : ''}}
+      ${{latest.last_lat != null ? `<div class="ping-window mono">Last seen: ${{latest.last_lat.toFixed(5)}}, ${{latest.last_lon.toFixed(5)}}${{lmk(latest.last_lat, latest.last_lon) ? ' &middot; ' + lmk(latest.last_lat, latest.last_lon) : ''}}</div>` : ''}}
       ${{(latest.stop_locations && latest.stop_locations.length) ? `
       <details class="stops">
         <summary>${{latest.stop_locations.length}} stop${{latest.stop_locations.length === 1 ? '' : 's'}}</summary>
         <ul class="mono">
-          ${{latest.stop_locations.map(s => `<li>${{s.time_utc.split(' ')[1]}} &middot; ${{s.lat.toFixed(4)}}, ${{s.lon.toFixed(4)}} &middot; ${{s.duration_hms}}</li>`).join('')}}
+          ${{latest.stop_locations.map(s => `<li>${{s.time_utc.split(' ')[1]}} &middot; ${{s.lat.toFixed(4)}}, ${{s.lon.toFixed(4)}}${{lmk(s.lat, s.lon) ? ' &middot; ' + lmk(s.lat, s.lon) : ''}} &middot; ${{s.duration_hms}}</li>`).join('')}}
         </ul>
       </details>` : ''}}
     `;
