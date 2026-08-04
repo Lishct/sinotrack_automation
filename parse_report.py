@@ -15,6 +15,13 @@ Assumptions (documented so you can adjust if wrong):
 - "Driving time" sums gaps wherever nSpeed > 0, same cap.
 These are estimates from ping density, not exact -- pings aren't evenly
 spaced, so treat these numbers as approximate, not authoritative.
+
+Note on landmarks: stop/last-known locations are reverse-geocoded via
+OpenStreetMap's Nominatim, which means those coordinates ARE sent to a
+third-party service (not "no data leaves this machine"). Results are
+cached to sinotrack_data/landmark_cache.json and shared with
+generate_dashboard.py, so any given coordinate is only ever looked up
+once, not re-fetched every run.
 """
 
 import json
@@ -32,9 +39,37 @@ VEHICLE_NAMES = {
 
 GAP_CAP_SECONDS = 600  # 10 minutes; caps any single gap in the idle/driving split
 
-# Simple in-process cache so repeated calls for the same coords don't
-# hammer Nominatim (Nominatim's policy: max 1 req/sec, no bulk).
-_landmark_cache = {}
+# --- Landmark (reverse-geocoding) cache -------------------------------------
+#
+# Persisted to disk and shared with generate_dashboard.py so a coordinate
+# is only ever sent to Nominatim once, total -- not once per script, not
+# once per day. Without this, generate_dashboard.py's history-wide sweep
+# would re-fetch every location it's ever seen on every single run, which
+# both gets slower every day (1 req/sec rate limit) and needlessly hammers
+# a free public service.
+
+LANDMARK_CACHE_PATH = Path("./sinotrack_data/landmark_cache.json")
+
+
+def _load_landmark_cache():
+    if LANDMARK_CACHE_PATH.exists():
+        try:
+            return json.loads(LANDMARK_CACHE_PATH.read_text())
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_landmark_cache(cache):
+    LANDMARK_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    LANDMARK_CACHE_PATH.write_text(json.dumps(cache, indent=2))
+
+
+_landmark_cache = _load_landmark_cache()
+
+
+def _landmark_key(lat, lon):
+    return f"{round(lat, 5)},{round(lon, 5)}"
 
 
 def get_landmark(lat, lon):
@@ -42,11 +77,12 @@ def get_landmark(lat, lon):
 
     Tries named places first (amenity, tourism, road), then falls back to
     suburb / area. Returns an empty string if nothing useful is found or
-    if the network call fails.  Results are cached in-process so each
-    unique location is only looked up once per run."""
+    if the network call fails. Cached to disk (see LANDMARK_CACHE_PATH) so
+    each unique coordinate is only ever looked up once, ever -- shared
+    across runs and with generate_dashboard.py."""
     if lat is None or lon is None:
         return ""
-    key = (round(lat, 5), round(lon, 5))
+    key = _landmark_key(lat, lon)
     if key in _landmark_cache:
         return _landmark_cache[key]
 
@@ -83,10 +119,12 @@ def get_landmark(lat, lon):
         parts = [p for p in [landmark, area] if p]
         result = ", ".join(parts)
         _landmark_cache[key] = result
+        _save_landmark_cache(_landmark_cache)  # persist immediately -- crash-safe
         time.sleep(1)  # Nominatim rate limit: 1 req/sec
         return result
     except Exception:
         _landmark_cache[key] = ""
+        _save_landmark_cache(_landmark_cache)
         return ""
 
 
@@ -386,7 +424,33 @@ def infer_report_date(json_path, records):
 if __name__ == "__main__":
     import sys
 
-    json_path = sys.argv[1] if len(sys.argv) > 1 else "sinotrack_data/2026-07-23_raw_responses.json"
+    DATA_DIR = Path("sinotrack_data")
+
+    if len(sys.argv) > 1:
+        json_path = sys.argv[1]
+    else:
+        # No file given -- use whichever capture is most recent by
+        # filename (they're YYYY-MM-DD prefixed, so this sorts correctly)
+        # rather than a hardcoded date that inevitably goes stale.
+        candidates = sorted(DATA_DIR.glob("*_raw_responses.json"))
+        if not candidates:
+            print(f"No capture files found in {DATA_DIR}\\ -- run sinotrack_scraper.py first.")
+            sys.exit(1)
+        json_path = str(candidates[-1])
+        print(f"No file given -- using most recent capture: {json_path}\n")
+
+    if not Path(json_path).exists():
+        print(f"File not found: {json_path}")
+        available = sorted(DATA_DIR.glob("*_raw_responses.json")) if DATA_DIR.exists() else []
+        if available:
+            print("Available capture files:")
+            for f in available:
+                print(f"  {f}")
+        else:
+            print(f"No capture files found in {DATA_DIR}\\ either -- run sinotrack_scraper.py first.")
+        print("\nUsage: python parse_report.py sinotrack_data\\<date>_raw_responses.json")
+        sys.exit(1)
+
     rows = build_report(json_path)
     print_report(rows)
 

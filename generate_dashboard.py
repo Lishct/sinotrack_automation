@@ -2,10 +2,15 @@
 Builds a self-contained dashboard.html from sinotrack_data/report_history.json
 (the running log parse_report.py appends to each day).
 
-No server, no external fonts/scripts, no internet needed to view it --
-just open the .html file in a browser. Re-run this after parse_report.py
-each day (or as the last step of the scheduled pipeline) to refresh it
-with the latest history.
+No server, no internet needed to VIEW it -- just open the .html file in a
+browser. Generating it does need internet the first time any given
+coordinate is seen (reverse-geocoding via Nominatim), but that result is
+cached to sinotrack_data/landmark_cache.json and shared with
+parse_report.py, so each unique coordinate is only ever looked up once,
+not re-fetched on every run.
+
+Re-run this after parse_report.py each day (or as the last step of the
+scheduled pipeline) to refresh it with the latest history.
 
 Run:
     python generate_dashboard.py
@@ -19,21 +24,35 @@ from pathlib import Path
 
 HISTORY_PATH = Path("./sinotrack_data/report_history.json")
 OUTPUT_PATH = Path("./sinotrack_data/dashboard.html")
+LANDMARK_CACHE_PATH = Path("./sinotrack_data/landmark_cache.json")
 
 TREND_DAYS = 14  # how many most-recent days feed each vehicle's sparkline
 
-_landmark_cache = {}
+
+def _load_landmark_cache():
+    if LANDMARK_CACHE_PATH.exists():
+        try:
+            return json.loads(LANDMARK_CACHE_PATH.read_text())
+        except Exception:
+            return {}
+    return {}
 
 
-def get_landmark(lat, lon):
-    """Reverse-geocodes a lat/lon via Nominatim. Returns a readable place
-    string (e.g. 'S & J Hotel, Erima') or '' if nothing useful is found.
-    Results are cached so each unique location is only fetched once."""
+def _save_landmark_cache(cache):
+    LANDMARK_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    LANDMARK_CACHE_PATH.write_text(json.dumps(cache, indent=2))
+
+
+def get_landmark(lat, lon, cache):
+    """Reverse-geocodes a lat/lon via Nominatim, using (and updating) the
+    shared on-disk cache so a coordinate already resolved by a previous
+    run -- by this script OR parse_report.py -- is never looked up
+    again."""
     if lat is None or lon is None:
         return ""
-    key = (round(lat, 5), round(lon, 5))
-    if key in _landmark_cache:
-        return _landmark_cache[key]
+    key = f"{round(lat, 5)},{round(lon, 5)}"
+    if key in cache:
+        return cache[key]
     try:
         url = (
             f"https://nominatim.openstreetmap.org/reverse"
@@ -66,18 +85,22 @@ def get_landmark(lat, lon):
         )
         parts = [p for p in [landmark, area] if p]
         result = ", ".join(parts)
-        _landmark_cache[key] = result
+        cache[key] = result
+        _save_landmark_cache(cache)  # persist immediately -- crash-safe
         time.sleep(1)  # Nominatim rate limit: 1 req/sec
         return result
     except Exception:
-        _landmark_cache[key] = ""
+        cache[key] = ""
+        _save_landmark_cache(cache)
         return ""
 
 
-def build_landmark_map(history):
-    """Pre-fetches landmarks for every unique coordinate in the history
-    (last_lat/last_lon + all stop_locations). Returns a dict keyed by
-    'lat,lon' (5dp) so the JS can look them up without a network call."""
+def build_landmark_map(history, cache):
+    """Ensures every unique coordinate in history (last_lat/last_lon +
+    all stop_locations) is resolved, using the cache wherever possible.
+    Only coordinates NOT already in the cache trigger a network call --
+    on a normal day that's just today's new stops, not the whole
+    accumulated history."""
     coords = set()
     for h in history:
         if h.get("last_lat") is not None:
@@ -86,15 +109,21 @@ def build_landmark_map(history):
             if s.get("lat") is not None:
                 coords.add((s["lat"], s["lon"]))
 
-    total = len(coords)
-    result = {}
-    for i, (lat, lon) in enumerate(coords, 1):
-        print(f"  [{i}/{total}] geocoding {lat:.5f}, {lon:.5f} ...", end=" ", flush=True)
-        place = get_landmark(lat, lon)
-        print(place or "(no result)")
-        key = f"{round(lat, 5)},{round(lon, 5)}"
-        result[key] = place
-    return result
+    new_coords = [
+        (lat, lon) for (lat, lon) in coords
+        if f"{round(lat, 5)},{round(lon, 5)}" not in cache
+    ]
+
+    if new_coords:
+        print(f"Geocoding {len(new_coords)} new coordinate(s) ({len(coords) - len(new_coords)} already cached)...")
+        for i, (lat, lon) in enumerate(new_coords, 1):
+            print(f"  [{i}/{len(new_coords)}] {lat:.5f}, {lon:.5f} ...", end=" ", flush=True)
+            place = get_landmark(lat, lon, cache)
+            print(place or "(no result)")
+    else:
+        print(f"All {len(coords)} coordinate(s) already cached -- no geocoding needed.")
+
+    return cache
 
 
 def load_history():
@@ -112,8 +141,8 @@ def build_html(history):
 
     history_json = json.dumps(history)
 
-    print("Fetching landmarks for all coordinates in history...")
-    landmark_map = build_landmark_map(history)
+    cache = _load_landmark_cache()
+    landmark_map = build_landmark_map(history, cache)
     landmark_json = json.dumps(landmark_map)
 
     return f"""<!DOCTYPE html>
@@ -384,7 +413,7 @@ def build_html(history):
 </section>
 
 <footer>
-  Distance is odometer delta for the day; driving/idle time are estimated from ping gaps (capped at 10 min each) and are approximate, not authoritative. Generated locally from report_history.json &mdash; no data leaves this machine.
+  Distance is odometer delta for the day; driving/idle time are estimated from ping gaps (capped at 10 min each) and are approximate, not authoritative. Stop/last-location place names are resolved via OpenStreetMap Nominatim (coordinates are sent to that service to do so) and cached locally so each is only looked up once. Everything else is generated locally from report_history.json.
 </footer>
 
 <script>
