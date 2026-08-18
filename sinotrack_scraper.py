@@ -7,7 +7,8 @@ Setup (run once):
 import json
 import os
 import re
-from datetime import date, timedelta
+import sys
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -34,8 +35,22 @@ VEHICLE_NAMES = [
 OUTPUT_DIR = Path("./sinotrack_data")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# Report window: yesterday, full day.
-TARGET_DATE = date.today() - timedelta(days=1)
+
+def resolve_target_date():
+    """Defaults to yesterday (the normal daily-run case), but accepts an
+    explicit YYYY-MM-DD as the first command-line argument to pull a
+    specific past date instead -- for backfilling a day that turned out
+    to be captured wrong, or filling a gap."""
+    if len(sys.argv) > 1:
+        try:
+            return datetime.strptime(sys.argv[1], "%Y-%m-%d").date()
+        except ValueError:
+            print(f"'{sys.argv[1]}' isn't a valid date -- use YYYY-MM-DD, e.g. 2026-08-03")
+            sys.exit(1)
+    return date.today() - timedelta(days=1)
+
+
+TARGET_DATE = resolve_target_date()
 
 
 def select_calendar_date(page, field_locator, target_date: date):
@@ -67,11 +82,17 @@ def select_calendar_date(page, field_locator, target_date: date):
     # Day numbers are <em> tags (confirmed via recording), matched by the
     # "emphasis" role — scoped to visible ones, and still excluding a
     # grayed adjacent-month day that happens to share the same number.
+    #
+    # IMPORTANT: has_text does a SUBSTRING match on plain strings, so
+    # searching for "5" used to also match "15" and "25" -- this is what
+    # caused vf to silently get the wrong date. An exact-match regex
+    # closes that off entirely; "5" now only matches a cell whose text is
+    # exactly "5", never "15".
     day_cell = page.locator(
         ".ivu-date-picker-cells-cell:visible"
         ":not(.ivu-date-picker-cells-cell-prev-month)"
         ":not(.ivu-date-picker-cells-cell-next-month)",
-        has_text=str(target_date.day),
+        has_text=re.compile(rf"^\s*{target_date.day}\s*$"),
     )
 
     count = day_cell.count()
