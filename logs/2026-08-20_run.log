@@ -1,0 +1,21 @@
+2026-08-20 17:08:00  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:08:00  START  scraper
+2026-08-20 17:16:17  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:16:17  START  scraper
+2026-08-20 17:19:56  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:19:56  START  scraper
+2026-08-20 17:48:31  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:48:31  START  scraper
+2026-08-20 17:54:55  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:54:55  START  scraper
+2026-08-20 17:54:55  FAILED scraper -- could not launch process: Cannot validate argument on parameter 'ArgumentList'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again.
+2026-08-20 17:55:45  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:55:45  START  scraper
+2026-08-20 17:55:45  FAILED scraper -- could not launch process: Cannot validate argument on parameter 'ArgumentList'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again.
+2026-08-20 17:58:56  ===== Daily SinoTrack pipeline starting =====
+2026-08-20 17:58:56  START  scraper
+[DEBUG] Alphard (CBF849): Start field = '2026-08-19', End field = '2026-08-19', target = 2026-08-19
+[DEBUG] vf: Start field = '2026-08-19', End field = '2026-08-19', target = 2026-08-19
+[DEBUG] Pajero (BDF237): Start field = '2026-08-19', End field = '2026-08-19', target = 2026-08-19
+Captured 10 AppJson.asp responses -> sinotrack_data\2026-08-19_raw_responses.json
+2026-08-20 17:59:18  FAILED scraper (exit code ) -- stopping pipeline

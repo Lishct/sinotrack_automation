@@ -1,0 +1,222 @@
+2026-08-21 10:45:06  ===== Daily SinoTrack pipeline starting =====
+2026-08-21 10:45:06  START  scraper
+[DEBUG] Alphard (CBF849): Start field = '2026-08-20', End field = '2026-08-20', target = 2026-08-20
+[DEBUG] vf: Start field = '2026-08-20', End field = '2026-08-20', target = 2026-08-20
+[DEBUG] Pajero (BDF237): Start field = '2026-08-20', End field = '2026-08-20', target = 2026-08-20
+Captured 9 AppJson.asp responses -> sinotrack_data\2026-08-20_raw_responses.json
+2026-08-21 10:45:28  OK     scraper
+2026-08-21 10:45:28  START  parser
+2026-08-21 10:45:50  ===== Daily SinoTrack pipeline starting =====
+2026-08-21 10:45:50  START  scraper
+[DEBUG] Alphard (CBF849): Start field = '2026-08-20', End field = '2026-08-20', target = 2026-08-20
+[DEBUG] vf: Start field = '2026-08-20', End field = '2026-08-20', target = 2026-08-20
+[DEBUG] Pajero (BDF237): Start field = '2026-08-20', End field = '2026-08-20', target = 2026-08-20
+Captured 9 AppJson.asp responses -> sinotrack_data\2026-08-20_raw_responses.json
+2026-08-21 10:46:07  OK     scraper
+2026-08-21 10:46:07  START  parser
+--- Alphard (CBF849)  (device 9176002605) ---
+  Last reported:     10h 54m ago
+  Distance today:    63.49 km
+  Travel time:       01:40:31
+  Idle time:         20:09:47
+  Stops:             16
+  First move (UTC):  2026-08-20 00:41:32
+  Last stop (UTC):   2026-08-20 10:23:32
+  Max speed:         72 km/h
+  Last location:     -9.47399, 147.15336  Bligh Street, Ela Beach
+  Pings:             848
+  Stop locations:
+    2026-08-20 00:46:08 UTC  (-9.45915, 147.17708)  stayed 00:01:48
+    2026-08-20 00:50:39 UTC  (-9.47239, 147.19084)  Taurama Aquatic Centre, Three Mile  stayed 00:57:01
+    2026-08-20 01:54:25 UTC  (-9.49228, 147.22502)  stayed 00:44:49
+    2026-08-20 02:42:39 UTC  (-9.47059, 147.18947)  Taurama Road, Three Mile  stayed 00:02:55
+    2026-08-20 02:50:48 UTC  (-9.44473, 147.18236)  Islander Drive, Hohola North  stayed 00:27:59
+    2026-08-20 03:22:41 UTC  (-9.44337, 147.18284)  Meat Haus, Hohola North  stayed 00:44:51
+    2026-08-20 04:14:41 UTC  (-9.45003, 147.19635)  Boroko Foodworld, Gordons  stayed 00:02:03
+    2026-08-20 04:19:42 UTC  (-9.45820, 147.20121)  stayed 00:08:05
+    2026-08-20 04:27:50 UTC  (-9.46387, 147.19755)  Angau Drive, Four Mile  stayed 00:03:05
+    2026-08-20 04:31:40 UTC  (-9.46545, 147.19544)  Tango Supermarket, Four Mile  stayed 00:07:24
+    2026-08-20 04:44:15 UTC  (-9.47173, 147.18645)  2 Mile SVS Supermarket, Three Mile  stayed 00:05:08
+    2026-08-20 04:55:05 UTC  (-9.47262, 147.19088)  Taurama Aquatic Centre, Three Mile  stayed 01:04:38
+    2026-08-20 06:08:40 UTC  (-9.49236, 147.22507)  stayed 01:08:32
+    2026-08-20 07:25:22 UTC  (-9.47189, 147.19134)  St. John Ambulance Center, Three Mile  stayed 02:05:07
+    2026-08-20 09:40:05 UTC  (-9.49335, 147.22382)  Taurama Road, Taurama  stayed 00:02:03
+    2026-08-20 10:23:32 UTC  (-9.47396, 147.15330)  Bligh Street, Ela Beach  stayed 05:27:41
+
+--- vf  (device 9176002530) ---
+  Last reported:     10h 47m ago
+  Distance today:    94.79 km
+  Travel time:       02:04:44
+  Idle time:         21:29:04
+  Stops:             22
+  First move (UTC):  2026-08-19 21:08:41
+  Last stop (UTC):   2026-08-20 08:32:06
+  Max speed:         101 km/h
+  Last location:     -9.49219, 147.22503
+  Pings:             1049
+  Stop locations:
+    2026-08-19 21:19:39 UTC  (-9.44837, 147.19655)  S & J Hotel, Erima  stayed 00:00:03
+    2026-08-19 21:22:19 UTC  (-9.44838, 147.19651)  S & J Hotel, Erima  stayed 03:06:18
+    2026-08-20 00:31:44 UTC  (-9.45863, 147.20097)  Boroko Drive, Five Mile  stayed 00:02:18
+    2026-08-20 00:39:58 UTC  (-9.49305, 147.22410)  Taurama Road, Taurama  stayed 00:00:45
+    2026-08-20 00:42:38 UTC  (-9.49217, 147.22504)  stayed 00:05:20
+    2026-08-20 00:57:43 UTC  (-9.47201, 147.18624)  2 Mile SVS Supermarket, Three Mile  stayed 00:14:04
+    2026-08-20 01:11:51 UTC  (-9.47244, 147.18597)  Hubert Murray Highway, Three Mile  stayed 00:44:55
+    2026-08-20 02:06:15 UTC  (-9.47798, 147.20346)  Taurama Road, Boroko  stayed 00:00:29
+    2026-08-20 02:12:57 UTC  (-9.49250, 147.22482)  stayed 00:23:05
+    2026-08-20 02:47:36 UTC  (-9.46557, 147.19576)  Turumu Street, Four Mile  stayed 01:49:05
+    2026-08-20 04:42:42 UTC  (-9.47842, 147.20360)  stayed 00:01:25
+    2026-08-20 04:56:19 UTC  (-9.47004, 147.19689)  Kevau Place, Boroko  stayed 00:45:04
+    2026-08-20 05:46:34 UTC  (-9.46739, 147.19882)  Lahara Avenue, Boroko  stayed 00:08:04
+    2026-08-20 06:02:49 UTC  (-9.49225, 147.22492)  stayed 01:23:51
+    2026-08-20 07:32:10 UTC  (-9.47828, 147.20389)  Taurama Road, Boroko  stayed 00:00:45
+    2026-08-20 07:33:09 UTC  (-9.47442, 147.20459)  Bava Street, Boroko  stayed 00:01:01
+    2026-08-20 07:43:10 UTC  (-9.44832, 147.19663)  S & J Hotel, Erima  stayed 00:29:47
+    2026-08-20 08:18:44 UTC  (-9.45651, 147.19945)  Boroko Drive, Five Mile  stayed 00:00:30
+    2026-08-20 08:21:15 UTC  (-9.45857, 147.20094)  Boroko Drive, Five Mile  stayed 00:00:21
+    2026-08-20 08:25:44 UTC  (-9.47752, 147.20390)  Bava Street, Boroko  stayed 00:01:00
+    2026-08-20 08:31:14 UTC  (-9.49359, 147.22356)  stayed 00:00:31
+    2026-08-20 08:32:06 UTC  (-9.49221, 147.22490)  stayed 07:26:28
+
+--- Pajero (BDF237)  (device 9176002503) ---
+  Last reported:     10h 47m ago
+  Distance today:    95.05 km
+  Travel time:       02:00:32
+  Idle time:         21:36:29
+  Stops:             17
+  First move (UTC):  2026-08-19 20:00:08
+  Last stop (UTC):   2026-08-20 10:59:46
+  Max speed:         100 km/h
+  Last location:     -9.45976, 147.21400
+  Pings:             1115
+  Stop locations:
+    2026-08-19 20:05:23 UTC  (-9.49225, 147.22502)  stayed 01:50:30
+    2026-08-19 22:09:35 UTC  (-9.45626, 147.20829)  stayed 00:03:10
+    2026-08-19 22:21:48 UTC  (-9.45396, 147.18670)  stayed 00:21:02
+    2026-08-19 22:46:11 UTC  (-9.42633, 147.17933)  stayed 00:02:12
+    2026-08-19 22:56:53 UTC  (-9.38991, 147.16094)  stayed 00:54:02
+    2026-08-19 23:53:34 UTC  (-9.39009, 147.16119)  stayed 00:08:00
+    2026-08-20 00:07:23 UTC  (-9.41397, 147.18628)  stayed 00:01:48
+    2026-08-20 00:24:54 UTC  (-9.47353, 147.20471)  stayed 00:00:30
+    2026-08-20 00:29:01 UTC  (-9.48178, 147.21211)  stayed 00:16:09
+    2026-08-20 00:47:49 UTC  (-9.49241, 147.22495)  stayed 08:50:55
+    2026-08-20 09:44:45 UTC  (-9.47193, 147.19131)  stayed 00:00:30
+    2026-08-20 09:54:45 UTC  (-9.50974, 147.24117)  stayed 00:01:27
+    2026-08-20 09:58:45 UTC  (-9.49427, 147.22401)  stayed 00:00:20
+    2026-08-20 10:04:15 UTC  (-9.47219, 147.19191)  stayed 00:01:29
+    2026-08-20 10:06:45 UTC  (-9.47210, 147.19200)  stayed 00:03:01
+    2026-08-20 10:15:45 UTC  (-9.47737, 147.19748)  stayed 00:24:01
+    2026-08-20 10:59:46 UTC  (-9.45976, 147.21400)  stayed 04:58:59
+
+
+History updated -> sinotrack_data\report_history.json (2026-08-20)
+2026-08-21 10:46:49  OK     parser
+2026-08-21 10:46:49  START  dashboard
+All 269 coordinate(s) already cached -- no geocoding needed.
+Dashboard written -> sinotrack_data\dashboard.html (21 history rows)
+2026-08-21 10:46:49  OK     dashboard
+2026-08-21 10:46:49  OK     delivery (copied to C:\Users\Dopinder\OneDrive\SinoTrack Reports)
+2026-08-21 10:46:49  ===== Daily SinoTrack pipeline finished OK =====
+--- Alphard (CBF849)  (device 9176002605) ---
+  Last reported:     10h 54m ago
+  Distance today:    63.49 km
+  Travel time:       01:40:31
+  Idle time:         20:09:47
+  Stops:             16
+  First move (UTC):  2026-08-20 00:41:32
+  Last stop (UTC):   2026-08-20 10:23:32
+  Max speed:         72 km/h
+  Last location:     -9.47399, 147.15336  Bligh Street, Ela Beach
+  Pings:             848
+  Stop locations:
+    2026-08-20 00:46:08 UTC  (-9.45915, 147.17708)  stayed 00:01:48
+    2026-08-20 00:50:39 UTC  (-9.47239, 147.19084)  Taurama Aquatic Centre, Three Mile  stayed 00:57:01
+    2026-08-20 01:54:25 UTC  (-9.49228, 147.22502)  stayed 00:44:49
+    2026-08-20 02:42:39 UTC  (-9.47059, 147.18947)  Taurama Road, Three Mile  stayed 00:02:55
+    2026-08-20 02:50:48 UTC  (-9.44473, 147.18236)  Islander Drive, Hohola North  stayed 00:27:59
+    2026-08-20 03:22:41 UTC  (-9.44337, 147.18284)  Meat Haus, Hohola North  stayed 00:44:51
+    2026-08-20 04:14:41 UTC  (-9.45003, 147.19635)  Boroko Foodworld, Gordons  stayed 00:02:03
+    2026-08-20 04:19:42 UTC  (-9.45820, 147.20121)  stayed 00:08:05
+    2026-08-20 04:27:50 UTC  (-9.46387, 147.19755)  Angau Drive, Four Mile  stayed 00:03:05
+    2026-08-20 04:31:40 UTC  (-9.46545, 147.19544)  Tango Supermarket, Four Mile  stayed 00:07:24
+    2026-08-20 04:44:15 UTC  (-9.47173, 147.18645)  2 Mile SVS Supermarket, Three Mile  stayed 00:05:08
+    2026-08-20 04:55:05 UTC  (-9.47262, 147.19088)  Taurama Aquatic Centre, Three Mile  stayed 01:04:38
+    2026-08-20 06:08:40 UTC  (-9.49236, 147.22507)  stayed 01:08:32
+    2026-08-20 07:25:22 UTC  (-9.47189, 147.19134)  St. John Ambulance Center, Three Mile  stayed 02:05:07
+    2026-08-20 09:40:05 UTC  (-9.49335, 147.22382)  Taurama Road, Taurama  stayed 00:02:03
+    2026-08-20 10:23:32 UTC  (-9.47396, 147.15330)  Bligh Street, Ela Beach  stayed 05:27:41
+
+--- vf  (device 9176002530) ---
+  Last reported:     10h 46m ago
+  Distance today:    94.79 km
+  Travel time:       02:04:44
+  Idle time:         21:29:04
+  Stops:             22
+  First move (UTC):  2026-08-19 21:08:41
+  Last stop (UTC):   2026-08-20 08:32:06
+  Max speed:         101 km/h
+  Last location:     -9.49219, 147.22503
+  Pings:             1049
+  Stop locations:
+    2026-08-19 21:19:39 UTC  (-9.44837, 147.19655)  S & J Hotel, Erima  stayed 00:00:03
+    2026-08-19 21:22:19 UTC  (-9.44838, 147.19651)  S & J Hotel, Erima  stayed 03:06:18
+    2026-08-20 00:31:44 UTC  (-9.45863, 147.20097)  Boroko Drive, Five Mile  stayed 00:02:18
+    2026-08-20 00:39:58 UTC  (-9.49305, 147.22410)  Taurama Road, Taurama  stayed 00:00:45
+    2026-08-20 00:42:38 UTC  (-9.49217, 147.22504)  stayed 00:05:20
+    2026-08-20 00:57:43 UTC  (-9.47201, 147.18624)  2 Mile SVS Supermarket, Three Mile  stayed 00:14:04
+    2026-08-20 01:11:51 UTC  (-9.47244, 147.18597)  Hubert Murray Highway, Three Mile  stayed 00:44:55
+    2026-08-20 02:06:15 UTC  (-9.47798, 147.20346)  Taurama Road, Boroko  stayed 00:00:29
+    2026-08-20 02:12:57 UTC  (-9.49250, 147.22482)  stayed 00:23:05
+    2026-08-20 02:47:36 UTC  (-9.46557, 147.19576)  Turumu Street, Four Mile  stayed 01:49:05
+    2026-08-20 04:42:42 UTC  (-9.47842, 147.20360)  stayed 00:01:25
+    2026-08-20 04:56:19 UTC  (-9.47004, 147.19689)  Kevau Place, Boroko  stayed 00:45:04
+    2026-08-20 05:46:34 UTC  (-9.46739, 147.19882)  Lahara Avenue, Boroko  stayed 00:08:04
+    2026-08-20 06:02:49 UTC  (-9.49225, 147.22492)  stayed 01:23:51
+    2026-08-20 07:32:10 UTC  (-9.47828, 147.20389)  Taurama Road, Boroko  stayed 00:00:45
+    2026-08-20 07:33:09 UTC  (-9.47442, 147.20459)  Bava Street, Boroko  stayed 00:01:01
+    2026-08-20 07:43:10 UTC  (-9.44832, 147.19663)  S & J Hotel, Erima  stayed 00:29:47
+    2026-08-20 08:18:44 UTC  (-9.45651, 147.19945)  Boroko Drive, Five Mile  stayed 00:00:30
+    2026-08-20 08:21:15 UTC  (-9.45857, 147.20094)  Boroko Drive, Five Mile  stayed 00:00:21
+    2026-08-20 08:25:44 UTC  (-9.47752, 147.20390)  Bava Street, Boroko  stayed 00:01:00
+    2026-08-20 08:31:14 UTC  (-9.49359, 147.22356)  stayed 00:00:31
+    2026-08-20 08:32:06 UTC  (-9.49221, 147.22490)  stayed 07:26:28
+
+--- Pajero (BDF237)  (device 9176002503) ---
+  Last reported:     10h 46m ago
+  Distance today:    95.05 km
+  Travel time:       02:00:32
+  Idle time:         21:36:29
+  Stops:             17
+  First move (UTC):  2026-08-19 20:00:08
+  Last stop (UTC):   2026-08-20 10:59:46
+  Max speed:         100 km/h
+  Last location:     -9.45976, 147.21400
+  Pings:             1115
+  Stop locations:
+    2026-08-19 20:05:23 UTC  (-9.49225, 147.22502)  stayed 01:50:30
+    2026-08-19 22:09:35 UTC  (-9.45626, 147.20829)  stayed 00:03:10
+    2026-08-19 22:21:48 UTC  (-9.45396, 147.18670)  stayed 00:21:02
+    2026-08-19 22:46:11 UTC  (-9.42633, 147.17933)  stayed 00:02:12
+    2026-08-19 22:56:53 UTC  (-9.38991, 147.16094)  stayed 00:54:02
+    2026-08-19 23:53:34 UTC  (-9.39009, 147.16119)  stayed 00:08:00
+    2026-08-20 00:07:23 UTC  (-9.41397, 147.18628)  stayed 00:01:48
+    2026-08-20 00:24:54 UTC  (-9.47353, 147.20471)  stayed 00:00:30
+    2026-08-20 00:29:01 UTC  (-9.48178, 147.21211)  stayed 00:16:09
+    2026-08-20 00:47:49 UTC  (-9.49241, 147.22495)  stayed 08:50:55
+    2026-08-20 09:44:45 UTC  (-9.47193, 147.19131)  stayed 00:00:30
+    2026-08-20 09:54:45 UTC  (-9.50974, 147.24117)  stayed 00:01:27
+    2026-08-20 09:58:45 UTC  (-9.49427, 147.22401)  stayed 00:00:20
+    2026-08-20 10:04:15 UTC  (-9.47219, 147.19191)  stayed 00:01:29
+    2026-08-20 10:06:45 UTC  (-9.47210, 147.19200)  stayed 00:03:01
+    2026-08-20 10:15:45 UTC  (-9.47737, 147.19748)  stayed 00:24:01
+    2026-08-20 10:59:46 UTC  (-9.45976, 147.21400)  stayed 04:58:59
+
+
+History updated -> sinotrack_data\report_history.json (2026-08-20)
+2026-08-21 10:46:49  OK     parser
+2026-08-21 10:46:49  START  dashboard
+All 269 coordinate(s) already cached -- no geocoding needed.
+Dashboard written -> sinotrack_data\dashboard.html (21 history rows)
+2026-08-21 10:46:49  OK     dashboard
+2026-08-21 10:46:49  OK     delivery (copied to C:\Users\Dopinder\OneDrive\SinoTrack Reports)
+2026-08-21 10:46:49  ===== Daily SinoTrack pipeline finished OK =====
