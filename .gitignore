@@ -3,6 +3,8 @@
 # Secrets and credentials
 .env
 sinotrack_data/
+logs/
+*.tmp
 
 # Python cache files
 __pycache__/
@@ -23,6 +25,7 @@ data/raw/
 # OS junk files
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Playwright
 .cache/
